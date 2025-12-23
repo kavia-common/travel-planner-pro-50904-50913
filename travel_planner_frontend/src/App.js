@@ -101,6 +101,8 @@ function App() {
   const [loadingTrips, setLoadingTrips] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState(null);
   const selectedTrip = useMemo(() => trips.find((t) => t.id === selectedTripId) || null, [trips, selectedTripId]);
+  const [itineraryLoading, setItineraryLoading] = useState(false);
+  const [itineraryError, setItineraryError] = useState("");
 
   // modal state
   const initialModalState = { open: false, type: "destination", mode: "add", item: null };
@@ -139,6 +141,33 @@ function App() {
       isMounted = false;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch itinerary when a trip is selected to ensure we reflect backend state
+  useEffect(() => {
+    const tripId = selectedTripId;
+    if (!tripId) return;
+    let cancelled = false;
+    setItineraryLoading(true);
+    setItineraryError("");
+    api
+      .listItinerary(tripId)
+      .then((items) => {
+        if (cancelled) return;
+        setTrips((prev) =>
+          prev.map((t) => (t.id === tripId ? { ...t, itinerary: Array.isArray(items) ? items : [] } : t))
+        );
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setItineraryError("Failed to load itinerary");
+      })
+      .finally(() => {
+        if (!cancelled) setItineraryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedTripId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // PUBLIC_INTERFACE
   const toggleTheme = () => {
@@ -360,6 +389,8 @@ function App() {
             {/* Sections */}
             <section style={styles.section}>
               <h3>Destinations</h3>
+              {itineraryLoading && <div>Loading itinerary…</div>}
+              {itineraryError && <div style={{ color: "tomato" }}>{itineraryError}</div>}
               {itineraryByType.destination.map((item) => (
                 <ItineraryRow
                   key={item.id}
