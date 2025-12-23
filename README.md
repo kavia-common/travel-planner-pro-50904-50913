@@ -22,6 +22,9 @@ The frontend includes:
 2) Start Frontend (React)
 - cd travel_planner_frontend
 - Optional: cp .env.example .env and adjust REACT_APP_API_BASE_URL (defaults to http://localhost:3001)
+- If using a preview host (non-localhost) and you see "Invalid Host header":
+  - Preferred: ensure `.env` includes `DANGEROUSLY_DISABLE_HOST_CHECK=true` (development only)
+  - Or run `npm run start:insecure-host`
 - npm install
 - npm start (dev server at http://localhost:3000)
 

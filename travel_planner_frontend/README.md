@@ -29,7 +29,20 @@ REACT_APP_API_BASE_URL=http://localhost:3001
 1. Start backend (FastAPI) on port 3001.
 2. Start frontend:
    - `npm install`
+   - `cp .env.example .env` (optional) and adjust values if needed
    - `npm start` — dev server at http://localhost:3000
+
+### Preview environments and "Invalid Host header"
+
+Some preview environments access the dev server via a non-localhost host/URL and CRA may show "Invalid Host header".
+To allow the preview host in development only:
+
+- Preferred: set environment variable in `.env`:
+  - `DANGEROUSLY_DISABLE_HOST_CHECK=true`
+- Or use the provided start script:
+  - `npm run start:insecure-host`
+
+These options are for development/preview only. Do not enable host check bypass in production.
 
 ### Dev proxy (optional)
 This project includes `"proxy": "http://localhost:3001"` in `package.json` to help in environments where CORS is blocked.
