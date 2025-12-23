@@ -31,7 +31,10 @@ REACT_APP_API_BASE_URL=http://localhost:3001
    - `npm install`
    - `npm start` — dev server at http://localhost:3000
 
-Optional: Development proxy is not required when setting REACT_APP_API_BASE_URL to http://localhost:3001 because the API client calls the full URL directly with CORS. If your environment blocks CORS and you prefer a proxy, you may add `"proxy": "http://localhost:3001"` to `package.json`, then remove REACT_APP_API_BASE_URL to rely on the relative path approach.
+### Dev proxy (optional)
+This project includes `"proxy": "http://localhost:3001"` in `package.json` to help in environments where CORS is blocked.
+- Default approach (CORS): keep `REACT_APP_API_BASE_URL` set (or rely on default http://localhost:3001); requests go cross-origin with CORS.
+- Proxy approach: unset `REACT_APP_API_BASE_URL` and modify the API client to use relative paths if you need to force proxying. The current client uses absolute URLs intentionally to work well without proxy. Use this only if your environment requires it.
 
 ## Testing and Build
 
